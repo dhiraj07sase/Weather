@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Weather App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 1550px;
+    }
+
+    #weather-icon {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Weather App</h1>
+    <input type="text" id="location" placeholder="Enter city name">
+    <button onclick="getWeather()">Get Weather</button>
+    <div id="weather-info"></div>
+  </div>
+
+  <script>
+    function getWeather() {
+      var locationInput = document.getElementById("location");
+      var locationValue = locationInput.value;
+
+      var apiKey = "YOUR_OPENWEATHERMAP_API_KEY";
+      var apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + locationValue + "&appid=" + apiKey;
+
+      fetch(apiUrl)
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(data) {
+          displayWeather(data);
+        })
+        .catch(function(error) {
+          console.log("Error:", error);
+        });
+    }
+
+    function displayWeather(data) {
+      var weatherInfo = document.getElementById("weather-info");
+      weatherInfo.innerHTML = "";
+
+      var cityName = data.name;
+      var temperature = Math.round(data.main.temp - 273.15); // Convert temperature from Kelvin to Celsius
+      var weatherDescription = data.weather[0].description;
+      var weatherIcon = data.weather[0].icon;
+
+      var iconUrl = "http://openweathermap.org/img/w/" + weatherIcon + ".png";
+      var iconImg = document.createElement("img");
+      iconImg.src = iconUrl;
+      iconImg.id = "weather-icon";
+      weatherInfo.appendChild(iconImg);
+
+      var cityHeading = document.createElement("h2");
+      cityHeading.textContent = cityName;
+      weatherInfo.appendChild(cityHeading);
+
+      var tempParagraph = document.createElement("p");
+      tempParagraph.textContent = "Temperature: " + temperature + "°C";
+      weatherInfo.appendChild(tempParagraph);
+
+      var descriptionParagraph = document.createElement("p");
+      descriptionParagraph.textContent = "Description: " + weatherDescription;
+      weatherInfo.appendChild(descriptionParagraph);
+    }
+  </script>
+</body>
+</html>
